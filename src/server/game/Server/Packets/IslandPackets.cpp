@@ -15,45 +15,37 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Player.h"
-#include "ScriptMgr.h"
-#include "CombatAI.h"
-#include "Creature.h"
-#include "CreatureGroups.h"
-#include "GameObject.h"
-#include "InstanceScript.h"
-#include "Scenario.h"
-#include "WorldStatePackets.h"
-#include "MiscPackets.h"
 #include "IslandPackets.h"
-#include "WorldSession.h"
 
-enum sv_events
+WorldPacket const* WorldPackets::Island::IslandOpenNpc::Write()
 {
+    _worldPacket << QueueNPCGuid;
 
-};
-
-enum sv_gos
-{
-
-};
-
-enum sv_conversations
-{
-
-};
-
-struct scenario_verdant_wilds : public InstanceScript
-{
-    
+    return &_worldPacket;
 }
 
-protected:
-    EventMap events;
-};
-
-void AddSC_expedition_verdant_wilds()
+WorldPacket const* WorldPackets::Island::IslandAzeriteXpGain::Write()
 {
-    RegisterInstanceScript(expedition_verdant_wilds, 1882);
+    _worldPacket << XpGain;
+    _worldPacket << PlayerGuid;
+    _worldPacket << SourceGuid;
+    _worldPacket << SourceID;
+
+    return &_worldPacket;
+}
+
+WorldPacket const* WorldPackets::Island::IslandCompleted::Write()
+{
+    _worldPacket << MapID;
+    _worldPacket << Winner;
+    _worldPacket << DisplayInfos.size();
+    
+    return &_worldPacket;
+}
+
+void WorldPackets::Island::IslandOnQueue::Read()
+{
+    _worldPacket >> QueueNPCGuid;
+    _worldPacket >> ActivityID;
 }
 
